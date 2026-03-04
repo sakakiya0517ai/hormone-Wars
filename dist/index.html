@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ホルモン・ウォーズ：恒常性サバイバル</title>
+  <meta name="description" content="血糖値をコントロールして恒常性を守る！生物基礎が楽しく学べる体内サバイバルゲーム。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+JP:wght@300;400;700;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="undefined" />
+<script type="module" src="/_assets/index.0e0b1f5c.js"></script>
+</head>
+
+<body>
+
+  <!-- ============================
+     SCREEN: TITLE
+============================= -->
+  <div id="screen-title" class="screen active">
+    <div class="title-mode-indicator">🏠 今はスタート画面で操作しています</div>
+    <div class="title-bg-animation" id="titleBgAnim"></div>
+    <div class="title-content">
+      <p class="title-sub">生物基礎 × サバイバルゲーム</p>
+      <h1 class="title-logo">ホルモン・ウォーズ</h1>
+      <p class="title-tagline">あなたの体内は今、危機に瀕している。<br>血糖値を制して、恒常性を守り抜け。</p>
+      <div class="title-modes-container" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+        <button class="btn-primary glow-pulse" onclick="startGameMode('normal')">▶ 通常モード</button>
+        <button class="btn-primary" style="background: linear-gradient(135deg, #cc44ff, #8855ff);"
+          onclick="startGameMode('type1')">💉 Ⅰ型糖尿病モード</button>
+        <button class="btn-primary" style="background: linear-gradient(135deg, #ff8c00, #ff4488);"
+          onclick="startGameMode('type2')">🍔 Ⅱ型糖尿病モード</button>
+      </div>
+      <button class="btn-secondary" id="btnHowToPlay" onclick="goToHowTo()">遊び方</button>
+    </div>
+  </div>
+
+  <!-- ============================
+     SCREEN: HOW TO PLAY
+============================= -->
+  <div id="screen-howto" class="screen">
+    <div class="howto-container">
+      <h2 class="section-title">遊び方</h2>
+      <div class="howto-grid">
+        <div class="howto-card">
+          <div class="howto-icon">🎯</div>
+          <h3>ゴール</h3>
+          <p>血糖値を<strong>80〜120mg/dL</strong>のゾーンに保ち続けよう。安定した時間が長いほどスコアが貯まる。</p>
+        </div>
+        <div class="howto-card">
+          <div class="howto-icon">💉</div>
+          <h3>ホルモン操作</h3>
+          <p><strong style="color:var(--insulin-color)">インスリン</strong>で血糖値を下げ、<strong
+              style="color:var(--glucagon-color)">グルカゴン</strong>で上げる。<strong
+              style="color:var(--adrenaline-color)">アドレナリン</strong>は緊急用。</p>
+        </div>
+        <div class="howto-card">
+          <div class="howto-icon">⚡</div>
+          <h3>イベント</h3>
+          <p>食事・病気・ストレスなど32種類のイベントが血糖値を乱す。素早く対処しよう！</p>
+        </div>
+        <div class="howto-card">
+          <div class="howto-icon">🛒</div>
+          <h3>装備・ショップ</h3>
+          <p>スコアでアイテムを購入し<strong>装着</strong>すると効果を発揮。最大3つまで装備できる。</p>
+        </div>
+        <div class="howto-card">
+          <div class="howto-icon">👶→👴</div>
+          <h3>ライフステージ</h3>
+          <p>幼少期→成人期→高齢期と進むにつれてホルモンの効きが悪くなる。老いに抗え！</p>
+        </div>
+        <div class="howto-card">
+          <div class="howto-icon">🔥</div>
+          <h3>コンボシステム</h3>
+          <p>安定域をキープし続けると「コンボ」が発生！ポイント獲得倍率がどんどん上がる。</p>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="goToTitle()">タイトルへ戻る</button>
+    </div>
+  </div>
+
+  <!-- ============================
+     SCREEN: INTRO / TUTORIAL
+============================= -->
+  <div id="screen-intro" class="screen">
+    <div class="intro-container">
+      <div class="intro-brain-pulse">🧠</div>
+      <h2>緊急警報：体内環境の異常を検知</h2>
+      <div id="introTextBox" class="intro-text-box"></div>
+      <button class="btn-primary" id="btnIntroNext" style="display:none" onclick="beginCountdown()">
+        ➡️ 準備完了！ ゲーム開始へ
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================
+     SCREEN: COUNTDOWN
+============================= -->
+  <div id="screen-countdown" class="screen">
+    <div class="countdown-container">
+      <div class="countdown-stage-badge" id="cdStageBadge">👶 幼少期 スタート</div>
+      <div class="countdown-number" id="cdNumber">3</div>
+      <div class="countdown-label">GET READY!</div>
+      <div class="countdown-tip" id="cdTip">インスリンで血糖値を下げ、グルカゴンで上げよう。80〜120 mg/dL を保て！</div>
+    </div>
+  </div>
+
+  <!-- ============================
+     SCREEN: GAME
+============================= -->
+  <div id="screen-game" class="screen">
+
+    <!-- TOP HUD -->
+    <div class="hud-top">
+      <div class="hud-stage" id="hudStage">幼少期</div>
+      <div class="hud-timer-wrap">
+        <span class="hud-label" id="hudProgressLabel">ステージ進行度</span>
+        <div class="progress-bar-outer"
+          style="width: 100px; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); position: relative; overflow: hidden; margin-top: 4px;">
+          <div id="hudProgressBar"
+            style="width: 0%; height: 100%; background: var(--text-highlight); transition: width 0.5s;"></div>
+        </div>
+      </div>
+      <div class="hud-score-wrap">
+        <span class="hud-label">スコア</span>
+        <span class="hud-score" id="hudScore">0</span>
+      </div>
+      <div class="hud-combo-wrap" id="hudComboWrap">
+        <span class="hud-label">コンボ</span>
+        <span class="hud-combo" id="hudCombo">x1.0</span>
+      </div>
+      <div class="hud-hp-wrap">
+        <span class="hud-label">体力</span>
+        <div class="hp-bar-outer">
+          <div class="hp-bar-inner" id="hpBar"></div>
+        </div>
+      </div>
+      <button class="btn-return-title" onclick="goToTitle()">🚪</button>
+      <button class="btn-shop-toggle" id="btnShopToggle" onclick="toggleShop()">🛒 ショップ</button>
+    </div>
+
+    <!-- GAME MAIN AREA -->
+    <div class="game-main">
+
+      <!-- LEFT: BODY VISUALIZATION -->
+      <div class="body-panel">
+        <div class="body-title">体内モニター</div>
+        <svg id="bodySVG" viewBox="0 0 280 520" xmlns="http://www.w3.org/2000/svg">
+          <!-- Silhouette -->
+          <g id="bodyGroup">
+            <!-- Head -->
+            <ellipse cx="140" cy="60" rx="45" ry="52" fill="#1a2340" stroke="#3a4a7a" stroke-width="1.5" />
+            <!-- Neck -->
+            <rect x="122" y="108" width="36" height="22" rx="6" fill="#1a2340" stroke="#3a4a7a" stroke-width="1.5" />
+            <!-- Torso -->
+            <path
+              d="M80,130 Q60,148 62,220 L62,340 Q62,360 80,365 L200,365 Q218,360 218,340 L218,220 Q220,148 200,130 Z"
+              fill="#152035" stroke="#3a4a7a" stroke-width="1.5" />
+            <!-- Arms -->
+            <path d="M80,138 Q40,150 35,240 Q30,270 42,290 Q55,270 60,240 Q68,180 80,165 Z" fill="#1a2340"
+              stroke="#3a4a7a" stroke-width="1.5" />
+            <path d="M200,138 Q240,150 245,240 Q250,270 238,290 Q225,270 220,240 Q212,180 200,165 Z" fill="#1a2340"
+              stroke="#3a4a7a" stroke-width="1.5" />
+            <!-- Legs -->
+            <path d="M98,365 Q90,420 88,490 Q100,495 112,490 Q118,425 120,365 Z" fill="#1a2340" stroke="#3a4a7a"
+              stroke-width="1.5" />
+            <path d="M162,365 Q170,420 172,490 Q160,495 148,490 Q142,425 140,365 Z" fill="#1a2340" stroke="#3a4a7a"
+              stroke-width="1.5" />
+
+            <!-- BRAIN (間脳) -->
+            <g id="organBrain">
+              <ellipse cx="140" cy="52" rx="28" ry="22" fill="#1e3060" stroke="#5588ff" stroke-width="2" />
+              <text x="140" y="49" text-anchor="middle" font-size="9" fill="#88aaff"
+                font-family="Noto Sans JP">間脳</text>
+              <text x="140" y="60" text-anchor="middle" font-size="7" fill="#6688cc">(視床下部)</text>
+              <!-- Brain pulse ring -->
+              <ellipse id="brainPulseRing" cx="140" cy="52" rx="28" ry="22" fill="none" stroke="#4488ff"
+                stroke-width="3" opacity="0" />
+            </g>
+
+            <!-- STOMACH (胃) -->
+            <g id="organStomach">
+              <ellipse cx="130" cy="195" rx="28" ry="22" fill="#1e2d50" stroke="#334488" stroke-width="1.5" />
+              <text x="130" y="198" text-anchor="middle" font-size="8" fill="#6688cc"
+                font-family="Noto Sans JP">胃</text>
+            </g>
+
+            <!-- PANCREAS (すい臓) -->
+            <g id="organPancreas">
+              <ellipse cx="155" cy="240" rx="30" ry="14" fill="#1e3040" stroke="#33aaaa" stroke-width="2" />
+              <text x="155" y="243" text-anchor="middle" font-size="8" fill="#44cccc"
+                font-family="Noto Sans JP">すい臓</text>
+              <!-- Pancreas pulse ring -->
+              <ellipse id="pancreasPulseRing" cx="155" cy="240" rx="30" ry="14" fill="none" stroke="#00ffcc"
+                stroke-width="3" opacity="0" />
+            </g>
+
+            <!-- BLOOD VESSEL (blood path) -->
+            <path id="bloodVessel" d="M140,74 L140,108 L140,130 L140,195 M140,195 L155,217 L155,226" fill="none"
+              stroke="#cc3344" stroke-width="3" stroke-dasharray="6,3" />
+
+            <!-- Sugar particles container -->
+            <g id="sugarParticles"></g>
+            <!-- Hormone particles -->
+            <g id="hormoneParticles"></g>
+            <!-- Pulse signal from brain to pancreas -->
+            <g id="pulseSignals"></g>
+            <!-- Food particles (mouth to stomach) -->
+            <g id="foodParticles"></g>
+          </g>
+        </svg>
+
+        <!-- Organ labels -->
+        <div class="organ-status" id="organStatus">
+          <div class="organ-tag brain-tag">🧠 <span id="brainStatus">監視中</span></div>
+          <div class="organ-tag pancreas-tag">🫀 <span id="pancreasStatus">待機中</span></div>
+        </div>
+      </div>
+
+      <!-- CENTER: BLOOD GLUCOSE GAUGE -->
+      <div class="gauge-panel">
+        <div class="gauge-title">血糖値モニター</div>
+        <div class="glucose-display" id="glucoseDisplay">
+          <span class="glucose-value" id="glucoseValue">100</span>
+          <span class="glucose-unit">mg/dL</span>
+        </div>
+        <div class="gauge-outer" id="gaugeOuter">
+          <div class="gauge-zone-safe" id="gaugeSafe"></div>
+          <div class="gauge-zone-warn-high"></div>
+          <div class="gauge-zone-warn-low"></div>
+          <div class="gauge-needle" id="gaugeNeedle"></div>
+          <div class="gauge-labels">
+            <span class="gauge-label-low">40↓<br>低血糖</span>
+            <div class="gauge-label-safe">
+              <span>80</span>
+              <span class="safe-zone-label">✅ SAFE ZONE</span>
+              <span>120</span>
+            </div>
+            <span class="gauge-label-high">200↑<br>高血糖</span>
+          </div>
+        </div>
+
+        <!-- Trend graph -->
+        <div class="trend-section">
+          <div class="trend-label">血糖値グラフ</div>
+          <canvas id="trendCanvas" width="360" height="100"></canvas>
+        </div>
+
+        <!-- Hormone buttons -->
+        <div class="hormone-section">
+          <div class="hormone-label">ホルモン放出コマンド</div>
+          <div class="hormone-buttons">
+            <div class="hormone-btn-wrap">
+              <button class="hormone-btn insulin-btn" id="btnInsulin" onclick="fireHormone('insulin')">
+                <span class="hormone-icon">💉</span>
+                <span class="hormone-name">インスリン</span>
+                <span class="hormone-effect">↓ 血糖値を下げる</span>
+              </button>
+              <div class="hormone-cooldown" id="cooldownInsulin">
+                <div class="cooldown-bar insulin-cd" id="cdBarInsulin"></div>
+              </div>
+            </div>
+            <div class="hormone-btn-wrap">
+              <button class="hormone-btn glucagon-btn" id="btnGlucagon" onclick="fireHormone('glucagon')">
+                <span class="hormone-icon">🍯</span>
+                <span class="hormone-name">グルカゴン</span>
+                <span class="hormone-effect">↑ 血糖値を上げる</span>
+              </button>
+              <div class="hormone-cooldown" id="cooldownGlucagon">
+                <div class="cooldown-bar glucagon-cd" id="cdBarGlucagon"></div>
+              </div>
+            </div>
+            <div class="hormone-btn-wrap">
+              <button class="hormone-btn adrenaline-btn" id="btnAdrenaline" onclick="fireHormone('adrenaline')">
+                <span class="hormone-icon">⚡</span>
+                <span class="hormone-name">アドレナリン</span>
+                <span class="hormone-effect">↑↑ 緊急ブースト</span>
+              </button>
+              <div class="hormone-cooldown" id="cooldownAdrenaline">
+                <div class="cooldown-bar adrenaline-cd" id="cdBarAdrenaline"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: EVENT / EQUIPMENT -->
+      <div class="event-panel">
+        <!-- Current Event -->
+        <div class="event-section">
+          <div class="event-label">⚡ 現在のイベント</div>
+          <div class="event-card" id="eventCard">
+            <div class="event-card-icon" id="eventIcon">💤</div>
+            <div class="event-card-name" id="eventName">待機中...</div>
+            <div class="event-card-desc" id="eventDesc">次のイベントを待っています。</div>
+            <div class="event-card-effect" id="eventEffect"></div>
+          </div>
+          <div class="event-timer-bar-outer">
+            <div class="event-timer-bar" id="eventTimerBar"></div>
+          </div>
+        </div>
+
+        <!-- Education popup -->
+        <div class="edu-popup" id="eduPopup" style="display:none">
+          <div class="edu-popup-header">💡 体内情報</div>
+          <div class="edu-popup-text" id="eduPopupText"></div>
+        </div>
+
+        <!-- Equipped Items -->
+        <div class="equip-section">
+          <div class="equip-label">🎽 装備スロット（最大3枠）</div>
+          <div class="equip-slots">
+            <div class="equip-slot" id="slot0" onclick="openEquipShop(0)"><span class="slot-empty">空</span></div>
+            <div class="equip-slot" id="slot1" onclick="openEquipShop(1)"><span class="slot-empty">空</span></div>
+            <div class="equip-slot" id="slot2" onclick="openEquipShop(2)"><span class="slot-empty">空</span></div>
+          </div>
+          <p class="equip-hint">クリックで取り外し</p>
+        </div>
+
+        <!-- Active effects display -->
+        <div class="effects-section">
+          <div class="effects-label">📊 有効中の効果</div>
+          <div class="effects-list" id="effectsList"><span class="no-effects">なし</span></div>
+        </div>
+      </div>
+    </div>
+  </div><!-- end screen-game -->
+
+  <!-- SHOP OVERLAY -->
+  <div class="shop-overlay" id="shopOverlay" style="display:none">
+    <div class="shop-modal">
+      <div class="shop-header">
+        <h2>🛒 健康ショップ</h2>
+        <div class="shop-score-display">所持ポイント: <span id="shopScore">0</span> HP</div>
+        <button class="btn-close-shop" onclick="toggleShop()">✕ 閉じる</button>
+      </div>
+      <div class="shop-tabs">
+        <button class="shop-tab active" onclick="filterShop('all')" id="tab-all">全て</button>
+        <button class="shop-tab" onclick="filterShop('owned')" id="tab-owned">🎒 所持</button>
+        <button class="shop-tab" onclick="filterShop('supplement')" id="tab-supplement">💊 サプリ</button>
+        <button class="shop-tab" onclick="filterShop('lifestyle')" id="tab-lifestyle">🏠 生活支援</button>
+        <button class="shop-tab" onclick="filterShop('medical')" id="tab-medical">🏥 医療</button>
+        <button class="shop-tab" onclick="filterShop('government')" id="tab-government">🏛 行政</button>
+        <button class="shop-tab" onclick="filterShop('legendary')" id="tab-legendary">⭐ 伝説</button>
+      </div>
+      <div class="shop-items-grid" id="shopItemsGrid"></div>
+    </div>
+  </div>
+
+  <!-- DANGER OVERLAYS (Wait, they were here too, but they can remain floating) -->
+  <div class="danger-overlay danger-high" id="dangerHigh" style="display:none"></div>
+  <div class="danger-overlay danger-low" id="dangerLow" style="display:none"></div>
+
+  <!-- ============================
+     SCREEN: STAGE TRANSITION
+============================= -->
+  <div id="screen-transition" class="screen">
+    <div class="transition-bg-burst" id="transitionBurst"></div>
+    <div class="transition-content">
+      <div class="transition-emoji" id="transitionEmoji">👶</div>
+      <div class="transition-clear-badge">✅ STAGE CLEAR!</div>
+      <h2 class="transition-title" id="transitionTitle">幼少期 突破！</h2>
+      <div class="transition-body" id="transitionBody"></div>
+      <div class="transition-stats" id="transitionStats"></div>
+      <div class="transition-score" id="transitionScore"></div>
+      <p class="transition-next-hint" id="transitionNextHint"></p>
+      <div class="transition-shop-hint">💡 ショップでアイテムを買ってから次のステージへ！</div>
+      <div class="transition-buttons">
+        <button class="btn-secondary" onclick="openShopFromTransition()">🛒 ショップを開く</button>
+        <button class="btn-primary glow-pulse" id="btnNextStage" onclick="proceedToNextStage()">次のステージへ →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================
+     SCREEN: GAME OVER
+============================= -->
+  <div id="screen-gameover" class="screen">
+    <div class="gameover-particles" id="gameoverParticles"></div>
+    <div class="gameover-content">
+      <div class="gameover-emoji" id="gameoverEmoji">💀</div>
+      <h2 class="gameover-title">GAME OVER</h2>
+      <div class="gameover-stage-reached" id="gameoverStageReached"></div>
+      <div class="gameover-reason" id="gameoverReason"></div>
+      <div class="gameover-edu" id="gameoverEdu"></div>
+      <div class="gameover-score-box">
+        <div class="gameover-score-label">最終スコア</div>
+        <div class="gameover-score-val" id="gameoverScore">0</div>
+      </div>
+      <div class="gameover-rank" id="gameoverRank"></div>
+      <div class="gameover-buttons">
+        <button class="btn-primary glow-pulse" onclick="restartGame()">🔄 もう一度挑戦</button>
+        <button class="btn-secondary" onclick="goToTitle()">タイトルへ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================
+     SCREEN: ENDING
+============================= -->
+  <div id="screen-ending" class="screen">
+    <div class="ending-fireworks" id="endingFireworks"></div>
+    <div class="ending-content">
+      <div class="ending-crown">👑</div>
+      <div class="ending-stars" id="endingStars">⭐⭐⭐</div>
+      <h2 class="ending-title">🎉 人生サバイバル・完全制覇！</h2>
+      <div class="ending-subtitle">恒常性を守り抜いた真のホルモン・マスター</div>
+      <div class="ending-body" id="endingBody"></div>
+      <div class="ending-score-box">
+        <div class="ending-score-label">最終スコア</div>
+        <div class="ending-score-val" id="endingScore">0</div>
+      </div>
+      <div class="ending-rank" id="endingRank"></div>
+      <div class="ending-edu-summary" id="endingEduSummary"></div>
+      <div class="ending-buttons">
+        <button class="btn-primary glow-pulse" onclick="restartGame()">🔄 もう一度挑戦！</button>
+        <button class="btn-secondary" onclick="goToTitle()">タイトルへ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Score pop -->
+  <div class="score-pop" id="scorePop"></div>
+
+  
+</body>
+
+</html>
