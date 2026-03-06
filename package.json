@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "deploy": "node deploy.js"
+    "deploy": "node deploy.js",
+    "deploy:surge": "npx vite build --base=/ && npx surge dist hormone-wars-dev.surge.sh"
   },
   "dependencies": {
     "vue": "^3.0.4"
